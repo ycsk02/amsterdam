@@ -1,0 +1,25 @@
+# -*- coding: utf-8 -*-
+import scrapy
+
+class ProductItem(scrapy.Item):
+    id = scrapy.Field()
+    name = scrapy.Field()
+    info = scrapy.Field()
+    category = scrapy.Field()
+    domain = scrapy.Field()
+    price = scrapy.Field()
+    oldprice = scrapy.Field()
+    currency = scrapy.Field()
+    url = scrapy.Field()
+    brand = scrapy.Field()
+    color = scrapy.Field()
+    size = scrapy.Field()
+    targetId = scrapy.Field()
+    mainPicture = scrapy.Field()
+    pictures = scrapy.Field()
+    lpictures = scrapy.Field()
+    createdTime = scrapy.Field()
+    lastUpdatedTime = scrapy.Field()
+    updatedTimeBeforeLast = scrapy.Field()
+    image_urls = scrapy.Field()
+    images = scrapy.Field()
