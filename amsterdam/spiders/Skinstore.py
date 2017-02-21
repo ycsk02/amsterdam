@@ -16,9 +16,6 @@ class SkinstoreSpider(CrawlSpider):
     name = "Skinstore"
     allowed_domains = ["file:///home/sukai"]
     start_urls = ['file:///home/sukai/SkinStore_com-Product_Catalog_1.xml',]
-    # custom_settings = {
-    #     'ITEM_PIPELINES': {}
-    # }
 
     def parse(self,response):
         root = ET.fromstring(response.body)
