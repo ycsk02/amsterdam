@@ -13,14 +13,6 @@ from amsterdam.items import ProductItem
 
 class MimocookSpider(CrawlSpider):
     custom_settings = {
-    #     'IMAGES_STORE':'/images',
-    #     'IMAGES_THUMBS': {
-    #         'small':(210,235),
-    #         'big':(450,450),
-    #     },
-    #     'DOWNLOAD_DELAY':0.75,
-    #     'CONCURRENT_REQUESTS':16,
-    #     'CONCURRENT_REQUESTS_PER_DOMAIN':8,
         'ITEM_PIPELINES': {
             'amsterdam.pipelines.MyImagePipeline': None,
             'amsterdam.pipelines.AddTablePipeline': 400,
