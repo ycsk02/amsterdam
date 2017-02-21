@@ -44,6 +44,7 @@ class UpdatePricePipeline(object):
         except NoResultFound:
             online = False
         if online:
+            setattr(obj,'lastUpdatedTime',item['lastUpdatedTime'])
             if obj.price != str(item['price']):
                 #logging.log(logging.WARNING, "This DB record value is: %s %s"%(item['price'],obj.price))
                 setattr(obj,'price',item['price'])
@@ -56,6 +57,8 @@ class UpdatePricePipeline(object):
                         logging.log(logging.WARNING, "This product update online price: %s"%priceurl)
                     except:
                         logging.log(logging.ERROR, "This product update online price failed: %s"%item['url'])
+            else:
+                db.commit()
         return item
 
 class AddTablePipeline(object):
