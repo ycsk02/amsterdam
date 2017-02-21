@@ -40,8 +40,6 @@ class MimocookSpider(CrawlSpider):
         ),
     )
 
-    # def parse_start_url(self, response):
-    #     list(self.parse_links(response))
 
     def parse_start_url(self, response):
         sel = Selector(response)
