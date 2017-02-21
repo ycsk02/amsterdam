@@ -12,7 +12,7 @@ from decimal import Decimal
 from amsterdam.items import ProductItem
 
 class MimocookSpider(CrawlSpider):
-    # custom_settings = {
+    custom_settings = {
     #     'IMAGES_STORE':'/images',
     #     'IMAGES_THUMBS': {
     #         'small':(210,235),
@@ -21,13 +21,13 @@ class MimocookSpider(CrawlSpider):
     #     'DOWNLOAD_DELAY':0.75,
     #     'CONCURRENT_REQUESTS':16,
     #     'CONCURRENT_REQUESTS_PER_DOMAIN':8,
-    #     'ITEM_PIPELINES': {
-    #         #'pipelines.MyImagePipeline': 200,
-    #         'pipelines.AddTablePipeline': 400,
-    #         'pipelines.AddElasticsearchPipeline':900,
-    #         'pipelines.UpdatePricePipeline':1200,
-    #     }
-    # }
+        'ITEM_PIPELINES': {
+            'amsterdam.pipelines.MyImagePipeline': None,
+            'amsterdam.pipelines.AddTablePipeline': 400,
+            'amsterdam.pipelines.AddElasticsearchPipeline':900,
+            'amsterdam.pipelines.UpdatePricePipeline':1200,
+        }
+    }
     name = "Mimocook"
     allowed_domains = ["mimocook.com"]
 
