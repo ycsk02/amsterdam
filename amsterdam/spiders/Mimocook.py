@@ -22,6 +22,7 @@ class MimocookSpider(CrawlSpider):
     }
     name = "Mimocook"
     allowed_domains = ["mimocook.com"]
+    #redis_key = "MimocookSpider:start_urls"
 
     def get_starturls():
         response_page = requests.get('http://www.mimocook.com/en/')
