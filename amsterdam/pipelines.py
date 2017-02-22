@@ -14,8 +14,6 @@ import mimetypes
 from os.path import basename
 import requests
 
-# access_key='YIEn4E6nMpVI8ijzZeKad945PsLZeyudrXtyWZGu'
-# secret_key='mVOQ6dXpyVCVTQ2wRgZyeoOkEogs6vTc2PtjNZTI'
 access_key = settings.ACCESS_KEY
 secret_key = settings.SECRET_KEY
 
