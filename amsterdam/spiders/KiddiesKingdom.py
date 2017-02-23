@@ -12,17 +12,25 @@ from decimal import Decimal
 from amsterdam.items import ProductItem
 
 class KiddiesKingdomSpider(CrawlSpider):
+    # custom_settings = {
+    #     'ITEM_PIPELINES': {
+    #         'amsterdam.pipelines.MyImagePipeline': 200,
+    #         'amsterdam.pipelines.AddTablePipeline': 400,
+    #         'amsterdam.pipelines.AddElasticsearchPipeline':900,
+    #         'amsterdam.pipelines.UpdatePricePipeline':1200,
+    #     }
+    # }
     name = "KiddiesKingdom"
     allowed_domains = ["kiddies-kingdom.com","netdna-ssl.com"]
 
     def get_starturls():
         response_page = requests.get('http://www.kiddies-kingdom.com/')
         sel_page = Selector(response_page)
-        categorylink = sel_page.xpath('//a[contains(@class,"menulinks_mm ma_level_2")]/@href')[0:39].extract()
+        categorylink = sel_page.xpath('//a[contains(@class,"menulinks_mm ma_level_2")]/@href').extract()
         return categorylink
 
     start_urls = get_starturls()
-    #start_urls = ['http://www.kiddies-kingdom.com/96-doorway-bouncers',]
+    #start_urls = ['http://www.kiddies-kingdom.com/53-9-18kg-12mths-4yrs-group-1',]
 
     rules = (
         Rule(LinkExtractor(allow=(),restrict_xpaths=('//li[@class="pagination_next"]//a',)),
@@ -75,10 +83,14 @@ class KiddiesKingdomSpider(CrawlSpider):
         item['lastUpdatedTime'] = int(time.time())
         pictures = []
         item['image_urls'] = []
+
         for thumb in sel.xpath('//ul[@id="thumbs_list_frame"]/li'):
-            item['image_urls'].append(thumb.xpath('.//img/@src')[0].extract().replace('small_default','thickbox_default'))
-            pictures.append({'sml':thumb.xpath('.//img/@src')[0].extract(),'lrg':thumb.xpath('.//img/@src')[0].extract().replace('small_default','large_default'),'zoom':thumb.xpath('.//img/@src')[0].extract().replace('small_default','thickbox_default')})
+            if not thumb.xpath('.//div[@class="quick_videop"]').extract():
+                item['image_urls'].append(thumb.xpath('.//img/@src')[0].extract().replace('small_default','thickbox_default'))
+                pictures.append({'sml':thumb.xpath('.//img/@src')[0].extract(),'lrg':thumb.xpath('.//img/@src')[0].extract().replace('small_default','large_default'),'zoom':thumb.xpath('.//img/@src')[0].extract().replace('small_default','thickbox_default')})
         item['pictures'] = json.dumps(pictures)
+        if not item['pictures']:
+            logging.log(logging.WARNING, "This product pictures is null: %s"%item['url'])
         item['targetId'] = 'www.kiddies-kingdom.com' + sel.xpath('//input[@id="product_page_product_id"]/@value')[0].extract()
         #以下未取到数据
         item['size'] = ''

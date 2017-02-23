@@ -72,8 +72,9 @@ class AddTablePipeline(object):
                 if obj.price != item['price']:
                     setattr(obj,'price',item['price'])
                     setattr(obj,'oldprice',item['oldprice'])
-                    # setattr(obj,'mainPicture',item['mainPicture'])
-                    # setattr(obj,'lpictures',item['lpictures'])
+                # setattr(obj,'mainPicture',item['mainPicture'])
+                # setattr(obj,'pictures',item['pictures'])
+                # setattr(obj,'lpictures',item['lpictures'])
                 setattr(obj,'lastUpdatedTime',item['lastUpdatedTime'])
                 setattr(obj,'updatedTimeBeforeLast','1')
                 db.commit()
