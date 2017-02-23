@@ -2,6 +2,7 @@
 from amsterdam.spiders.Mimocook import MimocookSpider
 from amsterdam.spiders.Skinstore import SkinstoreSpider
 from amsterdam.spiders.Byboj import BybojSpider
+from amsterdam.spiders.KiddiesKingdom import KiddiesKingdomSpider
 
 import scrapy
 from twisted.internet import reactor
@@ -19,6 +20,7 @@ settings = get_project_settings()
 runner = CrawlerRunner(settings)
 
 runner.crawl(MimocookSpider)
+runner.crawl(KiddiesKingdomSpider)
 #runner.crawl(SkinstoreSpider)
 #runner.crawl(BybojSpider)
 
