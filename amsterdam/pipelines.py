@@ -51,7 +51,7 @@ class UpdatePricePipeline(object):
                 if obj.pid:
                     priceurl = settings.UPDATEPRICEURL+obj.pid+"?price="+str(item['price'])+"&old_price="+str(item['oldprice'])
                     try:
-                        requests.get(priceurl,timeout=5)
+                        requests.put(priceurl,timeout=5)
                         logging.log(logging.WARNING, "This product update online price: %s"%priceurl)
                     except:
                         logging.log(logging.ERROR, "This product update online price failed: %s"%item['url'])
