@@ -10,14 +10,15 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.http import Request
 from decimal import Decimal
 from amsterdam.items import ProductItem
+from amsterdam import settings
 
 class KiddiesKingdomSpider(CrawlSpider):
     # custom_settings = {
     #     'ITEM_PIPELINES': {
-    #         'amsterdam.pipelines.MyImagePipeline': 200,
-    #         'amsterdam.pipelines.AddTablePipeline': 400,
-    #         'amsterdam.pipelines.AddElasticsearchPipeline':900,
-    #         'amsterdam.pipelines.UpdatePricePipeline':1200,
+    #         # 'amsterdam.pipelines.MyImagePipeline': 200,
+    #         # 'amsterdam.pipelines.AddTablePipeline': 400,
+    #         # 'amsterdam.pipelines.AddElasticsearchPipeline':900,
+    #         # 'amsterdam.pipelines.UpdatePricePipeline':1200,
     #     }
     # }
     name = "KiddiesKingdom"
@@ -60,13 +61,19 @@ class KiddiesKingdomSpider(CrawlSpider):
         item['url'] = response.url
         logging.log(logging.WARNING, "I get this product in page: %s"%item['url'])
         item['name'] = sel.xpath('//div[@itemprop="name"]/text()')[0].extract()
-        item['info'] = sel.xpath('//div[@itemprop="description"]')[0].extract()
         try:
-            item['category'] = " ".join(sel.xpath('//div[@class="topbreadhead"]/text()').extract())
+            item['info'] = sel.xpath('//div[@itemprop="description"]')[0].extract()
+        except:
+            item['info'] = ''
+        try:
+            item['category'] = ",".join(sel.xpath('//div[@class="topbreadhead"]/text()').extract())
         except:
             item['category'] = ''
         item['domain'] = 'www.kiddies-kingdom.com'
-        item['brand'] = item['name'].split()[0]
+        try:
+            item['brand'] = [x for x in settings.brands if x.lower() in item['name'].lower()][0]
+        except:
+            item['brand'] = item['name'].split()[0]
         try:
             price = sel.xpath('//span[@id="our_price_display"]/text()')[0].extract()[1:]
             item['price'] = Decimal(price)

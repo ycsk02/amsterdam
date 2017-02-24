@@ -75,15 +75,17 @@ class AddTablePipeline(object):
                 # setattr(obj,'mainPicture',item['mainPicture'])
                 # setattr(obj,'pictures',item['pictures'])
                 # setattr(obj,'lpictures',item['lpictures'])
+                setattr(obj,'brand',item['brand'])
+                setattr(obj,'category',item['category'])
                 setattr(obj,'lastUpdatedTime',item['lastUpdatedTime'])
                 setattr(obj,'updatedTimeBeforeLast','1')
                 db.commit()
                 item['id'] = obj.id
                 item['createdTime'] = obj.createdTime
                 #logging.log(logging.WARNING, "This DB record value is: %s %s"%(item['id'],obj.id))
-            except:
+            except Exception,e:
                 db.rollback()
-                logging.log(logging.ERROR, "This product update database failed: %s"%item['url'])
+                logging.log(logging.ERROR, e)
         else:
             record = Product(name=item['name'],
                             info = item['info'],
@@ -108,8 +110,9 @@ class AddTablePipeline(object):
                 db.commit()
                 item['id'] = record.id
                 #logging.log(logging.WARNING, "This DB record value is: %s"%record.id)
-            except:
+            except Exception,e:
                 db.rollback()
+                logging.log(logging.ERROR, e)
         return item
 
 class MyImagePipeline(ImagesPipeline):
