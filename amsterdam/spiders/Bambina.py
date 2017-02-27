@@ -12,7 +12,7 @@ from decimal import Decimal
 from amsterdam.items import ProductItem
 from amsterdam import settings
 
-class UcareSpider(CrawlSpider):
+class BambinaSpider(CrawlSpider):
     # custom_settings = {
     #     'ITEM_PIPELINES': {
     #         # 'amsterdam.pipelines.MyImagePipeline': 200,
@@ -21,8 +21,8 @@ class UcareSpider(CrawlSpider):
     #         # 'amsterdam.pipelines.UpdatePricePipeline':1200,
     #     }
     # }
-    name = "Ucare"
-    allowed_domains = ["u-care.com.au","shopify.com"]
+    name = "Bambina"
+    allowed_domains = ["bambina.co.nz","shopify.com"]
 
     # def get_starturls():
     #     response_page = requests.get('http://www.kiddies-kingdom.com/')
@@ -31,10 +31,10 @@ class UcareSpider(CrawlSpider):
     #     return categorylink
     #
     # start_urls = get_starturls()
-    start_urls = ['http://www.u-care.com.au/collections/all',]
+    start_urls = ['https://www.bambina.co.nz/collections/aptamil',]
 
     rules = (
-        Rule(LinkExtractor(allow=(),restrict_xpaths=('//div[@class="pagination wide"]//a',)),
+        Rule(LinkExtractor(allow=(),restrict_xpaths=('//div[@class="pagination"]//a',)),
                            callback='parse_start_url',
                            follow=True
         ),
@@ -43,39 +43,37 @@ class UcareSpider(CrawlSpider):
 
     def parse_start_url(self, response):
         sel = Selector(response)
-        product_list = sel.xpath('//ul[@id="coll-product-list"]/li')
+        product_list = sel.xpath('//div[@class="productlist"]/div')
         for product in product_list:
             #判断商品是否下架,只处理上架商品
             try:
-                if u"Buy" == product.xpath('.//a[@class="coll-prod-buy styled-small-button"]/text()')[0].extract().strip():
-                    product_page_url = u"http://www.u-care.com.au"+product.xpath('.//a[@class="coll-prod-title"]/@href')[0].extract()
+                    product_page_url = u"https://www.bambina.co.nz"+product.xpath('.//div[@class="desc"]/a/@href')[0].extract()
                     logging.log(logging.WARNING, "We created a new product url: %s"%product_page_url)
-                    #yield Request(product_page_url,callback = self.parse_page,dont_filter=True)
                     yield Request(product_page_url,callback = self.parse_page)
             except:
-                logging.log(logging.WARNING, "This product is not available: %s"%product.xpath('.//a[@class="coll-prod-title"]/@href')[0].extract())
+                logging.log(logging.WARNING, "This product is not available: %s"%product.xpath('.//div[@class="desc"]/a/@href')[0].extract())
 
     def parse_page(self,response):
         sel = Selector(response)
         item = ProductItem()
         item['url'] = response.url
         logging.log(logging.WARNING, "I get this product in page: %s"%item['url'])
-        item['name'] = sel.xpath('//h1[@itemprop="name"]/text()')[0].extract()
+        item['name'] = sel.xpath('//h1/text()')[0].extract()
         try:
-            item['info'] = sel.xpath('//div[@id="full_description"]')[0].extract()
+            item['info'] = sel.xpath('//div[@class="description pagecontent simple"]')[0].extract()
         except:
             item['info'] = ''
         try:
-            item['category'] = 'u-care'
+            item['category'] = 'Aptamil'
         except:
             item['category'] = ''
-        item['domain'] = 'www.u-care.com.au'
+        item['domain'] = 'www.bambina.co.nz'
         try:
-            item['brand'] = 'U-Care'
+            item['brand'] = 'Aptamil'
         except:
             item['brand'] = item['name'].split()[0]
         try:
-            price = sel.xpath('//span[@class="product-price"]/text()')[0].extract()[1:]
+            price = sel.xpath('//div[@id="price-field"]/text()')[0].extract().strip()[1:]
             item['price'] = Decimal(price)
         except:
             item['price'] = '0'
@@ -85,12 +83,12 @@ class UcareSpider(CrawlSpider):
             item['oldprice'] = Decimal(oldprice)
         except:
             item['oldprice'] = '0'
-        item['currency'] = 'AUD'
+        item['currency'] = 'NZD'
         item['createdTime'] = int(time.time())
         item['lastUpdatedTime'] = int(time.time())
         pictures = []
         item['image_urls'] = []
-        image = "http:" + sel.xpath('//div[@id="product-photo-container"]/a/img/@src')[0].extract()
+        image = "http:" + sel.xpath('//div[@class="productimages"]/div/a/img/@src')[0].extract()
         item['image_urls'].append(image)
         pictures.append({'sml':image,'lrg':image,'zoom':image})
 
@@ -103,10 +101,11 @@ class UcareSpider(CrawlSpider):
         item['pictures'] = json.dumps(pictures)
         if not item['pictures']:
             logging.log(logging.WARNING, "This product pictures is null: %s"%item['url'])
-        item['targetId'] = 'www.u-care.com.au' + sel.xpath('//select[@id="product-select"]/option/@value')[0].extract()
+        item['targetId'] = 'www.bambina.co.nz' + sel.xpath('//form[@id="product-form"]/div/input[@name="id"]/@value')[0].extract()
         #以下未取到数据
         item['size'] = ''
         item['color'] = ''
         item['mainPicture'] = ''
         item['lpictures'] = ''
+        print item
         return item
