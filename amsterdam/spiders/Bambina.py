@@ -31,7 +31,7 @@ class BambinaSpider(CrawlSpider):
     #     return categorylink
     #
     # start_urls = get_starturls()
-    start_urls = ['https://www.bambina.co.nz/collections/aptamil',]
+    start_urls = ['https://www.bambina.co.nz/collections/aptamil','https://www.bambina.co.nz/collections/karicare']
 
     rules = (
         Rule(LinkExtractor(allow=(),restrict_xpaths=('//div[@class="pagination"]//a',)),
@@ -64,12 +64,12 @@ class BambinaSpider(CrawlSpider):
         except:
             item['info'] = ''
         try:
-            item['category'] = 'Aptamil'
+            item['category'] = ''
         except:
             item['category'] = ''
         item['domain'] = 'www.bambina.co.nz'
         try:
-            item['brand'] = 'Aptamil'
+            item['brand'] = 'bambina'
         except:
             item['brand'] = item['name'].split()[0]
         try:
@@ -107,5 +107,4 @@ class BambinaSpider(CrawlSpider):
         item['color'] = ''
         item['mainPicture'] = ''
         item['lpictures'] = ''
-        print item
         return item
