@@ -23,3 +23,4 @@ class ProductItem(scrapy.Item):
     updatedTimeBeforeLast = scrapy.Field()
     image_urls = scrapy.Field()
     images = scrapy.Field()
+    weight = scrapy.Field()

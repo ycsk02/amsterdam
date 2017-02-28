@@ -43,6 +43,7 @@ class UpdatePricePipeline(object):
             online = False
         if online:
             setattr(obj,'lastUpdatedTime',item['lastUpdatedTime'])
+            setattr(obj,'weight',item['weight'])
             if obj.price != str(item['price']):
                 #logging.log(logging.WARNING, "This DB record value is: %s %s"%(item['price'],obj.price))
                 setattr(obj,'price',item['price'])
@@ -79,6 +80,7 @@ class AddTablePipeline(object):
                 #setattr(obj,'category',item['category'])
                 setattr(obj,'lastUpdatedTime',item['lastUpdatedTime'])
                 setattr(obj,'updatedTimeBeforeLast','1')
+                setattr(obj,'weight',item['weight'])
                 db.commit()
                 item['id'] = obj.id
                 item['createdTime'] = obj.createdTime
@@ -104,7 +106,8 @@ class AddTablePipeline(object):
                             mainPicture=item['mainPicture'],
                             pictures=item['pictures'],
                             lpictures= item['lpictures'],
-                            updatedTimeBeforeLast='0')
+                            updatedTimeBeforeLast='0',
+                            weight = item['weight'])
             try:
                 db.add(record)
                 db.commit()

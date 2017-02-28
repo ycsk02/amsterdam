@@ -47,4 +47,5 @@ class SkinstoreSpider(CrawlSpider):
                 item['color'] = ''
                 item['mainPicture'] = ''
                 item['lpictures'] = ''
+                item['weight'] = 0
                 yield item

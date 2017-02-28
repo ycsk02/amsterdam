@@ -23,6 +23,7 @@ class Product(Base):
     createdTime = Column(BigInteger)
     lastUpdatedTime = Column(BigInteger)
     updatedTimeBeforeLast = Column(BigInteger)
+    weight = Column(Numeric)
 
 class TProduct(Base):
     __tablename__ = 't_product'
@@ -44,6 +45,7 @@ class TProduct(Base):
     createdTime = Column(BigInteger)
     lastUpdatedTime = Column(BigInteger)
     pid = Column(String(48))
+    weight = Column(Numeric)
 
 #    def __init__(self, id=None, title=None, url=None, date=None):
 #        self.id = id

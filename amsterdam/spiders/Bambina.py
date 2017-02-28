@@ -107,4 +107,5 @@ class BambinaSpider(CrawlSpider):
         item['color'] = ''
         item['mainPicture'] = ''
         item['lpictures'] = ''
+        item['weight'] = 0
         return item

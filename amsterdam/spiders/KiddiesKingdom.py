@@ -11,6 +11,7 @@ from scrapy.http import Request
 from decimal import Decimal
 from amsterdam.items import ProductItem
 from amsterdam import settings
+import re
 
 class KiddiesKingdomSpider(CrawlSpider):
     # custom_settings = {
@@ -99,9 +100,21 @@ class KiddiesKingdomSpider(CrawlSpider):
         if not item['pictures']:
             logging.log(logging.WARNING, "This product pictures is null: %s"%item['url'])
         item['targetId'] = 'www.kiddies-kingdom.com' + sel.xpath('//input[@id="product_page_product_id"]/@value')[0].extract()
+        try:
+            weightinfo = sel.xpath('//ul[@class="bullet"]')[0].extract()
+            weight=re.findall('(?i)Weight: </span> ([\d.]+)',weightinfo)
+        except:
+            weight = re.findall('(?i)Weight: ([\d.]+).*kg',item['info'])
+            if not weight:
+                weight = re.findall('(?i)Weight: ([\d.]+)',item['info'])
+        if not weight:
+            weight=re.findall('(?i)Weight.* ([\d.]+)',item['info'])
+        weightsum = sum([Decimal(x) for x in weight])
+        item['weight'] = weightsum
         #以下未取到数据
         item['size'] = ''
         item['color'] = ''
         item['mainPicture'] = ''
         item['lpictures'] = ''
+        logging.log(logging.WARNING, "This product %s weight is : %s"%(item['url'],item['weight']))
         return item
