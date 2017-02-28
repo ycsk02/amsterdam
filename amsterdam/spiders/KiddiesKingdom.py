@@ -104,9 +104,11 @@ class KiddiesKingdomSpider(CrawlSpider):
             weightinfo = sel.xpath('//ul[@class="bullet"]')[0].extract()
             weight=re.findall('(?i)Weight: </span> ([\d.]+)',weightinfo)
         except:
+            pass
+        if not weight:
             weight = re.findall('(?i)Weight: ([\d.]+).*kg',item['info'])
-            if not weight:
-                weight = re.findall('(?i)Weight: ([\d.]+)',item['info'])
+        if not weight:
+            weight = re.findall('(?i)Weight: ([\d.]+)',item['info'])
         if not weight:
             weight=re.findall('(?i)Weight.* ([\d.]+)',item['info'])
         weightsum = sum([Decimal(x) for x in weight])
