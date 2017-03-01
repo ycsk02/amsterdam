@@ -14,14 +14,14 @@ from amsterdam import settings
 import re
 
 class KiddiesKingdomSpider(CrawlSpider):
-    custom_settings = {
-        'ITEM_PIPELINES': {
-            # 'amsterdam.pipelines.MyImagePipeline': 200,
-            # 'amsterdam.pipelines.AddTablePipeline': 400,
-            # 'amsterdam.pipelines.AddElasticsearchPipeline':900,
-            # 'amsterdam.pipelines.UpdatePricePipeline':1200,
-        }
-    }
+    # custom_settings = {
+    #     'ITEM_PIPELINES': {
+    #         # 'amsterdam.pipelines.MyImagePipeline': 200,
+    #         # 'amsterdam.pipelines.AddTablePipeline': 400,
+    #         # 'amsterdam.pipelines.AddElasticsearchPipeline':900,
+    #         # 'amsterdam.pipelines.UpdatePricePipeline':1200,
+    #     }
+    # }
     name = "KiddiesKingdom"
     allowed_domains = ["kiddies-kingdom.com","netdna-ssl.com"]
 
