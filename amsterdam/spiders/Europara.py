@@ -11,6 +11,7 @@ from scrapy.http import Request
 from decimal import Decimal
 from amsterdam.items import ProductItem
 from amsterdam import settings
+import re
 
 class EuroparaSpider(CrawlSpider):
     # custom_settings = {
@@ -100,10 +101,23 @@ class EuroparaSpider(CrawlSpider):
         if not item['pictures']:
             logging.log(logging.WARNING, "This product pictures is null: %s"%item['url'])
         item['targetId'] = 'www.europara.cn' + sel.xpath('//input[@id="product_page_product_id"]/@value')[0].extract()
+        convert_kg = lambda x: '{}'.format(x/1000 + 0.3)
+        weightlist = re.findall(u'(?i)([\d]+)[\s]?[g|克]',item['name'])
+        if not weightlist:
+            weightlist = re.findall('([\d.]+)$',item['name'])
+        if not weightlist:
+            try:
+                weightlist = re.findall(u'(?i)([0-9,]+)[\s]?kg',item['name'])[0].replace(',','.')
+                weight = float(weightlist[0]) + 0.3
+            except:
+                pass
+        else:
+            weight = convert_kg(float(weightlist[0]))
+        item['weight'] = weight
+        logging.log(logging.WARNING, "This product %s weight is : %s"%(item['url'],item['weight']))
         #以下未取到数据
         item['size'] = ''
         item['color'] = ''
         item['mainPicture'] = ''
         item['lpictures'] = ''
-        item['weight'] = 0
         return item

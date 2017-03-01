@@ -11,6 +11,7 @@ from scrapy.http import Request
 from decimal import Decimal
 from amsterdam.items import ProductItem
 from amsterdam import settings
+import re
 
 class BambinaSpider(CrawlSpider):
     # custom_settings = {
@@ -102,10 +103,16 @@ class BambinaSpider(CrawlSpider):
         if not item['pictures']:
             logging.log(logging.WARNING, "This product pictures is null: %s"%item['url'])
         item['targetId'] = 'www.bambina.co.nz' + sel.xpath('//form[@id="product-form"]/div/input[@name="id"]/@value')[0].extract()
+
+        convert_kg = lambda x: '{}'.format(x/1000 + 0.3)
+        weightlist = re.findall(u'(?i)([\d]+)[\s]?[g|克]',item['name'])
+        weight = convert_kg(float(weightlist[0]))
+        item['weight'] = weight
+        logging.log(logging.WARNING, "This product %s weight is : %s"%(item['url'],item['weight']))
+
         #以下未取到数据
         item['size'] = ''
         item['color'] = ''
         item['mainPicture'] = ''
         item['lpictures'] = ''
-        item['weight'] = 0
         return item

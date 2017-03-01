@@ -102,21 +102,21 @@ class KiddiesKingdomSpider(CrawlSpider):
         item['targetId'] = 'www.kiddies-kingdom.com' + sel.xpath('//input[@id="product_page_product_id"]/@value')[0].extract()
         try:
             weightinfo = sel.xpath('//ul[@class="bullet"]')[0].extract()
-            weight=re.findall('(?i)Weight: </span> ([\d.]+)',weightinfo)
+            weight = re.findall('(?i)Weight: </span> ([\d.]+)',weightinfo)
         except:
-            pass
+            weight = None
         if not weight:
             weight = re.findall('(?i)Weight: ([\d.]+).*kg',item['info'])
         if not weight:
             weight = re.findall('(?i)Weight: ([\d.]+)',item['info'])
         if not weight:
-            weight=re.findall('(?i)Weight.* ([\d.]+)',item['info'])
+            weight = re.findall('(?i)Weight.* ([\d.]+)',item['info'])
         weightsum = sum([Decimal(x) for x in weight])
         item['weight'] = weightsum
+        logging.log(logging.WARNING, "This product %s weight is : %s"%(item['url'],item['weight']))
         #以下未取到数据
         item['size'] = ''
         item['color'] = ''
         item['mainPicture'] = ''
         item['lpictures'] = ''
-        logging.log(logging.WARNING, "This product %s weight is : %s"%(item['url'],item['weight']))
         return item
