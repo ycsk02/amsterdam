@@ -14,14 +14,14 @@ from amsterdam import settings
 import re
 
 class KiddiesKingdomSpider(CrawlSpider):
-    # custom_settings = {
-    #     'ITEM_PIPELINES': {
-    #         # 'amsterdam.pipelines.MyImagePipeline': 200,
-    #         # 'amsterdam.pipelines.AddTablePipeline': 400,
-    #         # 'amsterdam.pipelines.AddElasticsearchPipeline':900,
-    #         # 'amsterdam.pipelines.UpdatePricePipeline':1200,
-    #     }
-    # }
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            # 'amsterdam.pipelines.MyImagePipeline': 200,
+            # 'amsterdam.pipelines.AddTablePipeline': 400,
+            # 'amsterdam.pipelines.AddElasticsearchPipeline':900,
+            # 'amsterdam.pipelines.UpdatePricePipeline':1200,
+        }
+    }
     name = "KiddiesKingdom"
     allowed_domains = ["kiddies-kingdom.com","netdna-ssl.com"]
 
@@ -100,18 +100,15 @@ class KiddiesKingdomSpider(CrawlSpider):
         if not item['pictures']:
             logging.log(logging.WARNING, "This product pictures is null: %s"%item['url'])
         item['targetId'] = 'www.kiddies-kingdom.com' + sel.xpath('//input[@id="product_page_product_id"]/@value')[0].extract()
-        try:
-            weightinfo = sel.xpath('//ul[@class="bullet"]')[0].extract()
-            weight = re.findall('(?i)Weight: </span> ([\d.]+)',weightinfo)
-        except:
-            weight = None
+        weight = re.findall('(?i)(Weight|Weight with seat unit):[\s]?([\d.]+)[\s]?[kg]?',item['info'])
+        weightsum = sum([Decimal(x) for n,x in weight])
         if not weight:
-            weight = re.findall('(?i)Weight: ([\d.]+).*kg',item['info'])
-        if not weight:
-            weight = re.findall('(?i)Weight: ([\d.]+)',item['info'])
-        if not weight:
-            weight = re.findall('(?i)Weight.* ([\d.]+)',item['info'])
-        weightsum = sum([Decimal(x) for x in weight])
+            try:
+                weightinfo = sel.xpath('//ul[@class="bullet"]')[0].extract()
+                weight = re.findall('(?i)Weight: [</span>]?[\s]?([\d.]+)[\s]?[kg]?',weightinfo)
+                weightsum = sum([Decimal(x) for x in weight])
+            except:
+                weightsum = 0
         item['weight'] = weightsum
         logging.log(logging.WARNING, "This product %s weight is : %s"%(item['url'],item['weight']))
         #以下未取到数据
