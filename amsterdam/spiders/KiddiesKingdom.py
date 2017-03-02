@@ -113,9 +113,13 @@ class KiddiesKingdomSpider(CrawlSpider):
         else:
             item['weight'] = weightsum_bullet
         logging.log(logging.WARNING, "This product %s weight is : %s"%(item['url'],item['weight']))
+
+        othercolorurl = sel.xpath('//div[@class="productothercolors"]/ul/li/a/@href').extract()
+        item['color'] = ",".join([ x.split("/")[-1].split("-")[0] for x in othercolorurl])
+        logging.log(logging.WARNING, "This product %s color is : %s"%(item['url'],item['color']))
+
         #以下未取到数据
         item['size'] = ''
-        item['color'] = ''
         item['mainPicture'] = ''
         item['lpictures'] = ''
         return item

@@ -44,6 +44,7 @@ class UpdatePricePipeline(object):
         if online:
             setattr(obj,'lastUpdatedTime',item['lastUpdatedTime'])
             setattr(obj,'weight',item['weight'])
+            setattr(obj,'color',item['color'])
             if obj.price != str(item['price']):
                 #logging.log(logging.WARNING, "This DB record value is: %s %s"%(item['price'],obj.price))
                 setattr(obj,'price',item['price'])
@@ -77,6 +78,7 @@ class AddTablePipeline(object):
                 # setattr(obj,'pictures',item['pictures'])
                 # setattr(obj,'lpictures',item['lpictures'])
                 #setattr(obj,'brand',item['brand'])
+                setattr(obj,'color',item['color'])
                 #setattr(obj,'category',item['category'])
                 setattr(obj,'lastUpdatedTime',item['lastUpdatedTime'])
                 setattr(obj,'updatedTimeBeforeLast','1')
