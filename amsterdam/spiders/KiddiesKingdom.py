@@ -32,7 +32,7 @@ class KiddiesKingdomSpider(CrawlSpider):
         return categorylink
 
     start_urls = get_starturls()
-    #start_urls = ['http://www.kiddies-kingdom.com/53-9-18kg-12mths-4yrs-group-1',]
+    # start_urls = ['http://www.kiddies-kingdom.com/52-0-18kg-0-4yrs-group-0-1',]
 
     rules = (
         Rule(LinkExtractor(allow=(),restrict_xpaths=('//li[@class="pagination_next"]//a',)),
@@ -100,13 +100,13 @@ class KiddiesKingdomSpider(CrawlSpider):
         if not item['pictures']:
             logging.log(logging.WARNING, "This product pictures is null: %s"%item['url'])
         item['targetId'] = 'www.kiddies-kingdom.com' + sel.xpath('//input[@id="product_page_product_id"]/@value')[0].extract()
-        weight = re.findall('(?i)(Weight|Weight with seat unit):[\s]?([\d.]+)[\s]?[kg]?',item['info'])
-        weightsum = sum([Decimal(x) for n,x in weight])
+        weight = re.findall('(?i)(Weight|Weight with seat unit|Chassis with wheels|Chassis|Weight \(chassis only\))[:]?[\s|\xa0]?([\d.]+)[\s]?[kg]?',item['info'])
+        weightsum = sum([Decimal(x) for n,x in weight if x != '.'])
         if not weight:
             try:
                 weightinfo = sel.xpath('//ul[@class="bullet"]')[0].extract()
-                weight = re.findall('(?i)Weight: [</span>]?[\s]?([\d.]+)[\s]?[kg]?',weightinfo)
-                weightsum = sum([Decimal(x) for x in weight])
+                weight = re.findall('(?i)Weight: (</span>)?[\s]?([\d.]+)[\s]?[kg]?',weightinfo)
+                weightsum = sum([Decimal(x) for n,x in weight if x != '.'])
             except:
                 weightsum = 0
         item['weight'] = weightsum
