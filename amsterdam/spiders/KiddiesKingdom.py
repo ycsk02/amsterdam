@@ -100,16 +100,18 @@ class KiddiesKingdomSpider(CrawlSpider):
         if not item['pictures']:
             logging.log(logging.WARNING, "This product pictures is null: %s"%item['url'])
         item['targetId'] = 'www.kiddies-kingdom.com' + sel.xpath('//input[@id="product_page_product_id"]/@value')[0].extract()
-        weight = re.findall('(?i)(Weight|Weight with seat unit|Chassis with wheels|Chassis:|Weight \(chassis only\)|Seat:|Weight:\xa0</strong>|Weight:</strong>\xa0|Weight \(kg\)|Weight -)[:]?[\s|\xa0]?([\d.]+)[\s]?[kg]?',item['info'])
-        weightsum = sum([Decimal(x) for n,x in weight if x != '.'])
-        if not weight:
-            try:
-                weightinfo = sel.xpath('//ul[@class="bullet"]')[0].extract()
-                weight = re.findall('(?i)Weight: (</span>)?[\s]?([\d.]+)[\s]?[kg]?',weightinfo)
-                weightsum = sum([Decimal(x) for n,x in weight if x != '.'])
-            except:
-                weightsum = 0
-        item['weight'] = weightsum
+        weight = re.findall('(?i)(Weight|Weight with seat unit|Chassis with wheels|Chassis:|Weight \(chassis only\)|Seat:|Weight:\xa0</strong>|Weight:</strong>\xa0|Weight \(kg\)|Weight -|Weight-)[:]?[\s|\xa0]?([\d.]+)[\s]?[kg]?',item['info'])
+        weightsum_info = sum([Decimal(x) for n,x in weight if x != '.'])
+        try:
+            weightinfo = sel.xpath('//ul[@class="bullet"]')[0].extract()
+            weight = re.findall('(?i)Weight: (</span>)?[\s]?([\d.]+)[\s]?[kg]?',weightinfo)
+            weightsum_bullet = sum([Decimal(x) for n,x in weight if x != '.'])
+        except:
+            weightsum_bullet = 0
+        if weightsum_info > weightsum_bullet:
+            item['weight'] = weightsum_info
+        else:
+            item['weight'] = weightsum_bullet
         logging.log(logging.WARNING, "This product %s weight is : %s"%(item['url'],item['weight']))
         #以下未取到数据
         item['size'] = ''
