@@ -45,6 +45,13 @@ class UpdatePricePipeline(object):
             setattr(obj,'lastUpdatedTime',item['lastUpdatedTime'])
             setattr(obj,'weight',item['weight'])
             setattr(obj,'color',item['color'])
+            # if obj.weight != str(item['weight']):
+            #     weighturl = settings.UPDATEWEIGHTURL+obj.pid+"?weight="+str(item['weight'])
+            #     try:
+            #         requests.put(weighturl,timeout=5)
+            #         logging.log(logging.WARNING, "This product update online weight: %s"%weighturl)
+            #     except:
+            #         logging.log(logging.ERROR, "This product update online weight failed: %s"%item['url'])
             if obj.price != str(item['price']):
                 #logging.log(logging.WARNING, "This DB record value is: %s %s"%(item['price'],obj.price))
                 setattr(obj,'price',item['price'])
