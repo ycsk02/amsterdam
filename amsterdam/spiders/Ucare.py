@@ -20,6 +20,7 @@ class UcareSpider(CrawlSpider):
     #         # 'amsterdam.pipelines.AddTablePipeline': 400,
     #         # 'amsterdam.pipelines.AddElasticsearchPipeline':900,
     #         # 'amsterdam.pipelines.UpdatePricePipeline':1200,
+    #         # #'amsterdam.pipelines.CSVPipeline':1500,
     #     }
     # }
     name = "Ucare"

@@ -14,6 +14,11 @@ import mimetypes
 from os.path import basename
 import requests
 
+from scrapy import signals
+from scrapy.contrib.exporter import CsvItemExporter
+import csv
+import time
+
 access_key = settings.ACCESS_KEY
 secret_key = settings.SECRET_KEY
 
@@ -166,4 +171,27 @@ class MyImagePipeline(ImagesPipeline):
             # logging.log(logging.WARNING, "This image_checksum value is: %s"%image_checksum)
             # logging.log(logging.WARNING, "This image_paths value is: %s"%image_paths)
             self.image_thumbs(image_paths)
+        return item
+
+class CSVPipeline(object):
+    @classmethod
+    def from_crawler(cls, crawler):
+        pipeline = cls()
+        crawler.signals.connect(pipeline.spider_opened, signals.spider_opened)
+        crawler.signals.connect(pipeline.spider_closed, signals.spider_closed)
+        return pipeline
+
+    def spider_opened(self, spider):
+        self.file = open(spider.name+'_output_'+time.strftime("%Y%m%d%H%M%S", time.localtime())+'.csv', 'w+b')
+        self.fields_to_export = ['name','price','url']
+        self.exporter = CsvItemExporter(self.file,fields_to_export=self.fields_to_export,delimiter=',',
+                                        quotechar='"',quoting=csv.QUOTE_ALL)
+        self.exporter.start_exporting()
+
+    def spider_closed(self, spider):
+        self.exporter.finish_exporting()
+        self.file.close()
+
+    def process_item(self, item, spider):
+        self.exporter.export_item(item)
         return item
