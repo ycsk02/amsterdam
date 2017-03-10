@@ -15,7 +15,7 @@ from os.path import basename
 import requests
 
 from scrapy import signals
-from scrapy.contrib.exporter import CsvItemExporter
+from scrapy.exporters import CsvItemExporter
 import csv
 import time
 
