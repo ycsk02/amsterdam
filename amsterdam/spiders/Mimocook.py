@@ -25,10 +25,13 @@ class MimocookSpider(CrawlSpider):
     #redis_key = "MimocookSpider:start_urls"
 
     def get_starturls():
-        response_page = requests.get('http://www.mimocook.com/en/')
-        sel_page = Selector(response_page)
-        categorylink = sel_page.xpath('//div[@class="cbp-category-link-w"]/a/@href').extract()
-        categorylink.append('http://www.mimocook.com/en/sales')
+        try:
+            response_page = requests.get('http://www.mimocook.com/en/',timeout=5)
+            sel_page = Selector(response_page)
+            categorylink = sel_page.xpath('//div[@class="cbp-category-link-w"]/a/@href').extract()
+            categorylink.append('http://www.mimocook.com/en/sales')
+        except:
+            categorylink = []
         return categorylink
 
     start_urls = get_starturls()

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from amsterdam.spiders.Mimocook import MimocookSpider
-from amsterdam.spiders.Skinstore import SkinstoreSpider
-from amsterdam.spiders.Byboj import BybojSpider
+#from amsterdam.spiders.Mimocook import MimocookSpider
+#from amsterdam.spiders.Skinstore import SkinstoreSpider
+#from amsterdam.spiders.Byboj import BybojSpider
 from amsterdam.spiders.KiddiesKingdom import KiddiesKingdomSpider
 
 import scrapy
@@ -19,7 +19,7 @@ configure_logging({'LOG_LEVEL':'INFO','LOG_FILE':'CrawlSpider.log',
 settings = get_project_settings()
 runner = CrawlerRunner(settings)
 
-runner.crawl(MimocookSpider)
+#runner.crawl(MimocookSpider)
 runner.crawl(KiddiesKingdomSpider)
 #runner.crawl(SkinstoreSpider)
 #runner.crawl(BybojSpider)
